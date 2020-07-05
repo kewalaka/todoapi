@@ -10,19 +10,16 @@ namespace TodoApi
 {
     public class Startup
     {
-        private const string connectionString = "Filename=Todo.db";
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
 
-            var optionsBuilder = new DbContextOptionsBuilder<TodoContext>();
-            optionsBuilder.UseSqlite(connectionString);
-
-            using (var client = new TodoContext(optionsBuilder.Options))
+            using (var client = new TodoContext())
             {
                 client.Database.EnsureCreated();
             }
+
         }
 
         public IConfiguration Configuration { get; }
@@ -30,8 +27,7 @@ namespace TodoApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddEntityFrameworkSqlite().AddDbContext<TodoContext>(opt =>
-               opt.UseSqlite(connectionString));
+            services.AddEntityFrameworkSqlite().AddDbContext<TodoContext>();
             services.AddControllers();
 
             // Register the Swagger generator, defining 1 or more Swagger documents
